@@ -105,7 +105,11 @@ export default function Home() {
   const [videosInput, setVideosInput] = useState(
     DEFAULT_CONTENT.videos.map((video) => ({ id: video.id, title: video.title, url: video.url })),
   )
-  const [adminToken, setAdminToken] = useState('')
+  const [adminUsername, setAdminUsername] = useState('')
+  const [adminPassword, setAdminPassword] = useState('')
+  const [sessionToken, setSessionToken] = useState('')
+  const [authMessage, setAuthMessage] = useState('')
+  const [authenticating, setAuthenticating] = useState(false)
   const [loading, setLoading] = useState(true)
   const [loadingError, setLoadingError] = useState('')
   const [saving, setSaving] = useState(false)
@@ -149,6 +153,45 @@ export default function Home() {
     }
   }, [])
 
+  async function handleAdminLogin(event) {
+    event.preventDefault()
+    setAuthMessage('')
+
+    const username = adminUsername.trim()
+    const password = adminPassword.trim()
+
+    if (!username || !password) {
+      setAuthMessage('Enter admin username and password to continue.')
+      return
+    }
+
+    setAuthenticating(true)
+
+    try {
+      const response = await fetch('/api/site-content', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      })
+      const result = await response.json()
+
+      if (!response.ok || !result.token) {
+        throw new Error(result.error || 'Login failed')
+      }
+
+      setSessionToken(result.token)
+      setAdminPassword('')
+      setAuthMessage('Admin login successful. You can now save changes.')
+    } catch (error) {
+      setSessionToken('')
+      setAuthMessage(error.message || 'Login failed')
+    } finally {
+      setAuthenticating(false)
+    }
+  }
+
   function addVideoRow() {
     setVideosInput((current) => [...current, { id: createId(), title: '', url: '' }])
   }
@@ -164,6 +207,11 @@ export default function Home() {
   async function handleSave(event) {
     event.preventDefault()
     setSaveMessage('')
+
+    if (!sessionToken) {
+      setSaveMessage('Admin login is required before saving website content.')
+      return
+    }
 
     const normalizedVideos = videosInput
       .map((video, index) => normalizeVideo(video, index))
@@ -184,10 +232,7 @@ export default function Home() {
     try {
       const headers = {
         'Content-Type': 'application/json',
-      }
-
-      if (adminToken.trim()) {
-        headers['x-admin-token'] = adminToken.trim()
+        Authorization: `Bearer ${sessionToken}`,
       }
 
       const response = await fetch('/api/site-content', {
@@ -318,9 +363,37 @@ export default function Home() {
       <section className="section" id="control-panel">
         <h2 className="section-title">Video Control Panel</h2>
         <p className="video-intro">
-          Change Instagram link and upload video links for the website. YouTube URLs are converted to embeds
-          automatically.
+          Sign in as admin, then change the Instagram link and website videos. YouTube URLs are converted to
+          embeds automatically.
         </p>
+
+        <form className="control-panel login-panel" onSubmit={handleAdminLogin}>
+          <h3>Admin Login</h3>
+          <label htmlFor="admin-username">Username</label>
+          <input
+            id="admin-username"
+            type="text"
+            value={adminUsername}
+            onChange={(event) => setAdminUsername(event.target.value)}
+            placeholder="Enter admin username"
+            autoComplete="username"
+          />
+
+          <label htmlFor="admin-password">Password</label>
+          <input
+            id="admin-password"
+            type="password"
+            value={adminPassword}
+            onChange={(event) => setAdminPassword(event.target.value)}
+            placeholder="Enter admin password"
+            autoComplete="current-password"
+          />
+
+          <button type="submit" className="btn-subscribe save-button" disabled={authenticating}>
+            {authenticating ? 'Signing In...' : 'Admin Sign In'}
+          </button>
+          {authMessage ? <p className="info-message">{authMessage}</p> : null}
+        </form>
 
         <form className="control-panel" onSubmit={handleSave}>
           <label htmlFor="instagram-url">Instagram URL</label>
@@ -330,15 +403,6 @@ export default function Home() {
             value={instagramInput}
             onChange={(event) => setInstagramInput(event.target.value)}
             placeholder="https://www.instagram.com/fahim___9422/"
-          />
-
-          <label htmlFor="admin-token">Admin Token (optional)</label>
-          <input
-            id="admin-token"
-            type="password"
-            value={adminToken}
-            onChange={(event) => setAdminToken(event.target.value)}
-            placeholder="Use if VIDEO_PANEL_TOKEN is configured"
           />
 
           <div className="panel-header-row">
@@ -617,6 +681,15 @@ export default function Home() {
           border: 1px solid var(--panel-border);
           border-radius: 12px;
           background: #f8fdff;
+        }
+
+        .login-panel {
+          margin-bottom: 16px;
+        }
+
+        .login-panel h3 {
+          margin: 0;
+          color: #0f172a;
         }
 
         .control-panel label {
