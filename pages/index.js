@@ -17,7 +17,7 @@ export default function Home() {
         <div className="nav-links">
           <a href="#home">Home</a>
           <a href="#about">About</a>
-          <a href="#videos">Videos</a>
+          <a href="#videos">All Videos</a>
         </div>
         <a
           href="https://www.youtube.com/@FAHIM9422"
@@ -68,52 +68,30 @@ export default function Home() {
       </section>
 
       <section className="section" id="videos">
-        <h2 className="section-title">Latest Videos</h2>
+        <h2 className="section-title">All Uploaded Videos</h2>
+        <p className="video-intro">
+          Watch old and new uploads from <strong>FAHIM9422</strong> directly on this website.
+        </p>
+        <div className="video-gallery">
+          <iframe
+            src="https://www.youtube.com/embed?listType=user_uploads&list=FAHIM9422"
+            title="FAHIM9422 uploaded videos"
+            allowFullScreen
+          ></iframe>
+        </div>
         <div className="video-grid">
           <div className="video-card">
             <div className="thumbnail">
               <iframe
-                src="https://www.youtube.com/embed/videoseries?list=UUFAHIM9422"
-                title="Latest upload"
+                src="https://www.youtube.com/embed?listType=user_uploads&list=FAHIM9422"
+                title="FAHIM9422 video feed"
                 allowFullScreen
               ></iframe>
             </div>
             <div className="video-info">
-              <h3>Latest Upload</h3>
-              <a href="https://www.youtube.com/@FAHIM9422" target="_blank" rel="noopener noreferrer">
-                Watch on YouTube &rarr;
-              </a>
-            </div>
-          </div>
-
-          <div className="video-card">
-            <div className="thumbnail">
-              <iframe
-                src="https://www.youtube.com/embed/videoseries?list=UUFAHIM9422"
-                title="Popular video"
-                allowFullScreen
-              ></iframe>
-            </div>
-            <div className="video-info">
-              <h3>Popular Video</h3>
-              <a href="https://www.youtube.com/@FAHIM9422" target="_blank" rel="noopener noreferrer">
-                Watch on YouTube &rarr;
-              </a>
-            </div>
-          </div>
-
-          <div className="video-card">
-            <div className="thumbnail">
-              <iframe
-                src="https://www.youtube.com/embed/videoseries?list=UUFAHIM9422"
-                title="Trending video"
-                allowFullScreen
-              ></iframe>
-            </div>
-            <div className="video-info">
-              <h3>Trending Now</h3>
-              <a href="https://www.youtube.com/@FAHIM9422" target="_blank" rel="noopener noreferrer">
-                Watch on YouTube &rarr;
+              <h3>Channel Video Feed</h3>
+              <a href="https://www.youtube.com/@FAHIM9422/videos" target="_blank" rel="noopener noreferrer">
+                Open Full Video List &rarr;
               </a>
             </div>
           </div>
@@ -280,9 +258,30 @@ export default function Home() {
           border: 1px solid var(--panel-border);
         }
 
+        .video-intro {
+          color: #334155;
+          margin: 0 0 24px;
+        }
+
+        .video-gallery {
+          width: 100%;
+          border: 1px solid var(--panel-border);
+          border-radius: 12px;
+          overflow: hidden;
+          background-color: #ffffff;
+          margin-bottom: 30px;
+        }
+
+        .video-gallery iframe {
+          width: 100%;
+          height: 420px;
+          border: none;
+          display: block;
+        }
+
         .video-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+          grid-template-columns: minmax(300px, 560px);
           gap: 30px;
         }
 
@@ -365,6 +364,14 @@ export default function Home() {
 
           .nav-links a {
             margin: 0 10px;
+          }
+
+          .video-gallery iframe {
+            height: 250px;
+          }
+
+          .video-grid {
+            grid-template-columns: 1fr;
           }
         }
       `}</style>
