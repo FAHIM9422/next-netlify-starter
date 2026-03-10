@@ -4,7 +4,7 @@
 
 [[redirects]]
   from = "/*"
-  to = "https://www.FAHIM9422.com/:splat"
+  to = "https://www.fahim9422.com/:splat"
   status = 301
   force = true
   conditions = { Host = ["agent-69b063bdbededeb0--loquacious-nougat-c0d6ec.netlify.app"] }
