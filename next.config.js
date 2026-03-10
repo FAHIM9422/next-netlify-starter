@@ -11,7 +11,7 @@ const nextConfig = {
     return redirectHosts.map((host) => ({
       source: "/:path*",
       has: [{ type: "host", value: host }],
-      destination: "https://www.fahim9422.com/:path*",
+      destination: "https://fahim9422.netlify.app/:path*",
       permanent: true
     }));
   }
