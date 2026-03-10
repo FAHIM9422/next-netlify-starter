@@ -1,6 +1,220 @@
 import Head from 'next/head'
+import { useEffect, useState } from 'react'
+
+const DEFAULT_CONTENT = {
+  instagramUrl: 'https://www.instagram.com/fahim___9422/',
+  videos: [
+    {
+      id: 'default-feed',
+      title: 'FAHIM9422 Upload Feed',
+      url: 'https://www.youtube.com/embed?listType=user_uploads&list=FAHIM9422',
+      type: 'youtube',
+    },
+  ],
+}
+
+function createId() {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return crypto.randomUUID()
+  }
+
+  return `video-${Date.now()}-${Math.random().toString(16).slice(2)}`
+}
+
+function extractYouTubeId(rawUrl) {
+  try {
+    const parsed = new URL(rawUrl)
+    const host = parsed.hostname.toLowerCase()
+
+    if (host.includes('youtu.be')) {
+      return parsed.pathname.replace('/', '').trim() || null
+    }
+
+    if (host.includes('youtube.com')) {
+      if (parsed.searchParams.get('v')) {
+        return parsed.searchParams.get('v')
+      }
+
+      if (parsed.pathname.includes('/shorts/')) {
+        return parsed.pathname.split('/shorts/')[1]?.split('/')[0] || null
+      }
+
+      if (parsed.pathname.includes('/embed/')) {
+        return parsed.pathname.split('/embed/')[1]?.split('/')[0] || null
+      }
+    }
+  } catch {
+    return null
+  }
+
+  return null
+}
+
+function normalizeVideo(videoInput, index) {
+  const title = (videoInput.title || '').trim()
+  const inputUrl = (videoInput.url || '').trim()
+
+  if (!title || !inputUrl) {
+    return null
+  }
+
+  if (!inputUrl.startsWith('http://') && !inputUrl.startsWith('https://')) {
+    return null
+  }
+
+  const directVideoPattern = /\.(mp4|webm|ogg)(\?.*)?$/i
+  if (directVideoPattern.test(inputUrl)) {
+    return {
+      id: videoInput.id || `video-${index + 1}`,
+      title,
+      url: inputUrl,
+      type: 'direct',
+    }
+  }
+
+  if (inputUrl.includes('youtube.com/embed?')) {
+    return {
+      id: videoInput.id || `video-${index + 1}`,
+      title,
+      url: inputUrl,
+      type: 'youtube',
+    }
+  }
+
+  const youtubeId = extractYouTubeId(inputUrl)
+  if (youtubeId) {
+    return {
+      id: videoInput.id || `video-${index + 1}`,
+      title,
+      url: `https://www.youtube.com/embed/${youtubeId}`,
+      type: 'youtube',
+    }
+  }
+
+  return {
+    id: videoInput.id || `video-${index + 1}`,
+    title,
+    url: inputUrl,
+    type: 'embed',
+  }
+}
 
 export default function Home() {
+  const [siteContent, setSiteContent] = useState(DEFAULT_CONTENT)
+  const [instagramInput, setInstagramInput] = useState(DEFAULT_CONTENT.instagramUrl)
+  const [videosInput, setVideosInput] = useState(
+    DEFAULT_CONTENT.videos.map((video) => ({ id: video.id, title: video.title, url: video.url })),
+  )
+  const [adminToken, setAdminToken] = useState('')
+  const [loading, setLoading] = useState(true)
+  const [loadingError, setLoadingError] = useState('')
+  const [saving, setSaving] = useState(false)
+  const [saveMessage, setSaveMessage] = useState('')
+
+  useEffect(() => {
+    let mounted = true
+
+    async function loadSiteContent() {
+      try {
+        const response = await fetch('/api/site-content')
+        if (!response.ok) {
+          throw new Error('Unable to load content')
+        }
+
+        const data = await response.json()
+        if (!mounted) {
+          return
+        }
+
+        setSiteContent(data)
+        setInstagramInput(data.instagramUrl || DEFAULT_CONTENT.instagramUrl)
+        setVideosInput(
+          (data.videos || []).map((video) => ({ id: video.id, title: video.title, url: video.url })),
+        )
+      } catch {
+        if (mounted) {
+          setLoadingError('Saved content could not be loaded. Default content is shown.')
+        }
+      } finally {
+        if (mounted) {
+          setLoading(false)
+        }
+      }
+    }
+
+    loadSiteContent()
+
+    return () => {
+      mounted = false
+    }
+  }, [])
+
+  function addVideoRow() {
+    setVideosInput((current) => [...current, { id: createId(), title: '', url: '' }])
+  }
+
+  function updateVideoField(id, field, value) {
+    setVideosInput((current) => current.map((video) => (video.id === id ? { ...video, [field]: value } : video)))
+  }
+
+  function removeVideoRow(id) {
+    setVideosInput((current) => current.filter((video) => video.id !== id))
+  }
+
+  async function handleSave(event) {
+    event.preventDefault()
+    setSaveMessage('')
+
+    const normalizedVideos = videosInput
+      .map((video, index) => normalizeVideo(video, index))
+      .filter((video) => video !== null)
+
+    if (normalizedVideos.length === 0) {
+      setSaveMessage('Add at least one valid video title and URL before saving.')
+      return
+    }
+
+    const payload = {
+      instagramUrl: instagramInput.trim() || DEFAULT_CONTENT.instagramUrl,
+      videos: normalizedVideos,
+    }
+
+    setSaving(true)
+
+    try {
+      const headers = {
+        'Content-Type': 'application/json',
+      }
+
+      if (adminToken.trim()) {
+        headers['x-admin-token'] = adminToken.trim()
+      }
+
+      const response = await fetch('/api/site-content', {
+        method: 'PUT',
+        headers,
+        body: JSON.stringify(payload),
+      })
+
+      const result = await response.json()
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Save failed')
+      }
+
+      setSiteContent(result.content)
+      setInstagramInput(result.content.instagramUrl)
+      setVideosInput(
+        result.content.videos.map((video) => ({ id: video.id, title: video.title, url: video.url })),
+      )
+      setSaveMessage('Changes saved. The website video list has been updated.')
+    } catch (error) {
+      setSaveMessage(error.message || 'Save failed')
+    } finally {
+      setSaving(false)
+    }
+  }
+
   return (
     <>
       <Head>
@@ -18,6 +232,7 @@ export default function Home() {
           <a href="#home">Home</a>
           <a href="#about">About</a>
           <a href="#videos">All Videos</a>
+          <a href="#control-panel">Control Panel</a>
         </div>
         <a
           href="https://www.youtube.com/@FAHIM9422"
@@ -32,14 +247,19 @@ export default function Home() {
       <section className="hero" id="home">
         <h1>Welcome to FAHIM9422</h1>
         <p>Join the community! Watch the latest videos, tutorials, and entertainment content.</p>
-        <a
-          href="https://www.youtube.com/@FAHIM9422?sub_confirmation=1"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="btn-subscribe hero-subscribe"
-        >
-          Subscribe to Channel
-        </a>
+        <div className="hero-actions">
+          <a
+            href="https://www.youtube.com/@FAHIM9422?sub_confirmation=1"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-subscribe hero-subscribe"
+          >
+            Subscribe to Channel
+          </a>
+          <a href={siteContent.instagramUrl} target="_blank" rel="noopener noreferrer" className="btn-instagram">
+            Follow Instagram
+          </a>
+        </div>
       </section>
 
       <section className="section" id="about">
@@ -72,30 +292,89 @@ export default function Home() {
         <p className="video-intro">
           Watch old and new uploads from <strong>FAHIM9422</strong> directly on this website.
         </p>
-        <div className="video-gallery">
-          <iframe
-            src="https://www.youtube.com/embed?listType=user_uploads&list=FAHIM9422"
-            title="FAHIM9422 uploaded videos"
-            allowFullScreen
-          ></iframe>
-        </div>
+        {loadingError ? <p className="info-message warning">{loadingError}</p> : null}
+        {loading ? <p className="info-message">Loading videos...</p> : null}
         <div className="video-grid">
-          <div className="video-card">
-            <div className="thumbnail">
-              <iframe
-                src="https://www.youtube.com/embed?listType=user_uploads&list=FAHIM9422"
-                title="FAHIM9422 video feed"
-                allowFullScreen
-              ></iframe>
+          {siteContent.videos.map((video) => (
+            <div className="video-card" key={video.id}>
+              <div className="thumbnail">
+                {video.type === 'direct' ? (
+                  <video controls preload="metadata" src={video.url} />
+                ) : (
+                  <iframe src={video.url} title={video.title} allowFullScreen></iframe>
+                )}
+              </div>
+              <div className="video-info">
+                <h3>{video.title}</h3>
+                <a href={video.url} target="_blank" rel="noopener noreferrer">
+                  Open Source Link &rarr;
+                </a>
+              </div>
             </div>
-            <div className="video-info">
-              <h3>Channel Video Feed</h3>
-              <a href="https://www.youtube.com/@FAHIM9422/videos" target="_blank" rel="noopener noreferrer">
-                Open Full Video List &rarr;
-              </a>
-            </div>
-          </div>
+          ))}
         </div>
+      </section>
+
+      <section className="section" id="control-panel">
+        <h2 className="section-title">Video Control Panel</h2>
+        <p className="video-intro">
+          Change Instagram link and upload video links for the website. YouTube URLs are converted to embeds
+          automatically.
+        </p>
+
+        <form className="control-panel" onSubmit={handleSave}>
+          <label htmlFor="instagram-url">Instagram URL</label>
+          <input
+            id="instagram-url"
+            type="url"
+            value={instagramInput}
+            onChange={(event) => setInstagramInput(event.target.value)}
+            placeholder="https://www.instagram.com/fahim___9422/"
+          />
+
+          <label htmlFor="admin-token">Admin Token (optional)</label>
+          <input
+            id="admin-token"
+            type="password"
+            value={adminToken}
+            onChange={(event) => setAdminToken(event.target.value)}
+            placeholder="Use if VIDEO_PANEL_TOKEN is configured"
+          />
+
+          <div className="panel-header-row">
+            <h3>Website Videos</h3>
+            <button type="button" onClick={addVideoRow} className="btn-secondary">
+              Add Video
+            </button>
+          </div>
+
+          <div className="panel-videos">
+            {videosInput.map((video, index) => (
+              <div className="panel-video-row" key={video.id}>
+                <input
+                  type="text"
+                  value={video.title}
+                  onChange={(event) => updateVideoField(video.id, 'title', event.target.value)}
+                  placeholder={`Video ${index + 1} title`}
+                />
+                <input
+                  type="url"
+                  value={video.url}
+                  onChange={(event) => updateVideoField(video.id, 'url', event.target.value)}
+                  placeholder="YouTube or direct video URL"
+                />
+                <button type="button" onClick={() => removeVideoRow(video.id)} className="btn-danger">
+                  Remove
+                </button>
+              </div>
+            ))}
+          </div>
+
+          <button type="submit" className="btn-subscribe save-button" disabled={saving}>
+            {saving ? 'Saving...' : 'Save Website Content'}
+          </button>
+          {saveMessage ? <p className="info-message">{saveMessage}</p> : null}
+        </form>
       </section>
 
       <footer>
@@ -103,11 +382,11 @@ export default function Home() {
           <a href="https://www.youtube.com/@FAHIM9422" target="_blank" rel="noopener noreferrer">
             YouTube
           </a>
-          <a href="#" aria-label="Instagram profile placeholder">
+          <a href={siteContent.instagramUrl} target="_blank" rel="noopener noreferrer">
             Instagram
           </a>
-          <a href="#" aria-label="Twitter profile placeholder">
-            Twitter
+          <a href="https://www.youtube.com/@FAHIM9422/videos" target="_blank" rel="noopener noreferrer">
+            Videos
           </a>
         </div>
         <p>&copy; 2026 FAHIM9422. All Rights Reserved.</p>
@@ -190,6 +469,7 @@ export default function Home() {
           transition: transform 0.2s ease, background-color 0.2s ease;
           display: inline-block;
           border: 1px solid transparent;
+          cursor: pointer;
         }
 
         .btn-subscribe:hover {
@@ -221,9 +501,26 @@ export default function Home() {
           margin-bottom: 30px;
         }
 
+        .hero-actions {
+          display: flex;
+          gap: 12px;
+          flex-wrap: wrap;
+          justify-content: center;
+        }
+
         .hero-subscribe {
-          font-size: 1.2rem;
+          font-size: 1.1rem;
           padding: 15px 30px;
+        }
+
+        .btn-instagram {
+          border: 1px solid var(--sky-blue-dark);
+          color: var(--sky-blue-dark);
+          background: #ffffff;
+          padding: 15px 26px;
+          border-radius: 999px;
+          text-decoration: none;
+          font-weight: 700;
         }
 
         .section {
@@ -263,26 +560,10 @@ export default function Home() {
           margin: 0 0 24px;
         }
 
-        .video-gallery {
-          width: 100%;
-          border: 1px solid var(--panel-border);
-          border-radius: 12px;
-          overflow: hidden;
-          background-color: #ffffff;
-          margin-bottom: 30px;
-        }
-
-        .video-gallery iframe {
-          width: 100%;
-          height: 420px;
-          border: none;
-          display: block;
-        }
-
         .video-grid {
           display: grid;
-          grid-template-columns: minmax(300px, 560px);
-          gap: 30px;
+          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+          gap: 24px;
         }
 
         .video-card {
@@ -300,14 +581,16 @@ export default function Home() {
 
         .thumbnail {
           width: 100%;
-          height: 180px;
+          height: 240px;
           background-color: var(--sky-blue-soft);
         }
 
-        iframe {
+        iframe,
+        video {
           width: 100%;
           height: 100%;
           border: none;
+          display: block;
         }
 
         .video-info {
@@ -326,6 +609,90 @@ export default function Home() {
           font-size: 0.9rem;
         }
 
+        .control-panel {
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+          padding: 24px;
+          border: 1px solid var(--panel-border);
+          border-radius: 12px;
+          background: #f8fdff;
+        }
+
+        .control-panel label {
+          font-weight: 700;
+          color: #0f172a;
+          margin-top: 6px;
+        }
+
+        .control-panel input {
+          border: 1px solid #94d8fb;
+          border-radius: 8px;
+          padding: 12px;
+          font-size: 0.95rem;
+        }
+
+        .panel-header-row {
+          margin-top: 10px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          gap: 12px;
+        }
+
+        .panel-header-row h3 {
+          margin: 0;
+          color: #0f172a;
+        }
+
+        .panel-videos {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+        }
+
+        .panel-video-row {
+          display: grid;
+          grid-template-columns: 1fr 1.4fr auto;
+          gap: 10px;
+        }
+
+        .btn-secondary,
+        .btn-danger {
+          border: 1px solid transparent;
+          border-radius: 8px;
+          padding: 10px 14px;
+          font-weight: 700;
+          cursor: pointer;
+        }
+
+        .btn-secondary {
+          background: #e0f2fe;
+          color: #0f172a;
+          border-color: #94d8fb;
+        }
+
+        .btn-danger {
+          background: #fef2f2;
+          color: #b91c1c;
+          border-color: #fecaca;
+        }
+
+        .save-button {
+          margin-top: 8px;
+          width: fit-content;
+        }
+
+        .info-message {
+          margin: 4px 0 0;
+          font-size: 0.95rem;
+          color: #0369a1;
+        }
+
+        .info-message.warning {
+          color: #b45309;
+        }
+
         footer {
           background: linear-gradient(180deg, #f8fdff 0%, #e0f2fe 100%);
           padding: 40px 10%;
@@ -342,6 +709,18 @@ export default function Home() {
           margin: 0 10px;
           text-decoration: none;
           font-size: 1.1rem;
+        }
+
+        @media (max-width: 900px) {
+          .panel-video-row {
+            grid-template-columns: 1fr;
+          }
+
+          .save-button,
+          .btn-secondary,
+          .btn-danger {
+            width: 100%;
+          }
         }
 
         @media (max-width: 768px) {
@@ -366,12 +745,8 @@ export default function Home() {
             margin: 0 10px;
           }
 
-          .video-gallery iframe {
-            height: 250px;
-          }
-
-          .video-grid {
-            grid-template-columns: 1fr;
+          .thumbnail {
+            height: 220px;
           }
         }
       `}</style>
