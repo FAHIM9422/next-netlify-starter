@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Red Dot Topup Shop - ০১৯১২১৬৮৩২৮ | Free Fire Diamond</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background: linear-gradient(135deg, #ff416c, #ff4b2b); min-height: 100vh; color: #333; }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #c31432, #240b36);
+            color: white;
+            padding: 15px 20px;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .logo { display: flex; align-items: center; gap: 10px; font-size: 1.6rem; font-weight: bold; }
+        .logo i { font-size: 2.2rem; animation: pulse 2s infinite; }
+        .phone {
+            font-size: 1.2rem; font-weight: bold; text-decoration: none; color: white;
+            display: inline-flex; align-items: center; gap: 5px;
+            background: linear-gradient(135deg, #00b4d8, #0077b6);
+            padding: 12px 20px; border-radius: 25px; transition: all 0.3s;
+        }
+        .phone:hover { background: linear-gradient(135deg, #0077b6, #005082); transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,180,216,0.4); }
+        .admin-btn {
+            background: rgba(255,255,255,0.2); backdrop-filter: blur(10px);
+            border: 2px solid rgba(255,255,255,0.5); color: white;
+            padding: 12px 24px; border-radius: 30px; cursor: pointer;
+            font-weight: bold; transition: all 0.3s; font-size: 1rem;
+        }
+        .admin-btn:hover { background: white; color: #c31432; transform: translateY(-2px); }
+
+        /* Notification Bar */
+        .notification-bar {
+            background: linear-gradient(135deg, #f39c12, #e74c3c);
+            color: white; text-align: center; padding: 12px 20px;
+            font-weight: bold; font-size: 1rem;
+            position: fixed; top: 70px; width: 100%; z-index: 999;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            animation: slideDown 0.5s ease-out;
+            overflow: hidden; white-space: nowrap;
+        }
+        .notification-bar .marquee {
+            display: inline-block;
+            animation: marquee 15s linear infinite;
+        }
+
+        /* Hero Section */
+        .hero {
+            margin-top: 120px; padding: 40px 20px; text-align: center; color: white;
+        }
+        .hero h1 {
+            font-size: 2.5rem; font-weight: 900;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+            margin-bottom: 10px;
+        }
+        .hero p { font-size: 1.2rem; opacity: 0.9; margin-bottom: 20px; }
+        .hero-badge {
+            display: inline-block; background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px); padding: 10px 25px;
+            border-radius: 25px; font-weight: bold; font-size: 1rem;
+            border: 2px solid rgba(255,255,255,0.4);
+        }
+
+        /* FF Section */
+        .ff-section {
+            padding: 30px 20px; max-width: 1200px; margin: 0 auto;
+        }
+        .section-title {
+            text-align: center; color: white; font-size: 1.8rem;
+            font-weight: 900; margin-bottom: 30px;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+        }
+        .ff-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 20px;
+        }
+        .ff-card {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border-radius: 20px; padding: 25px; color: white;
+            transition: all 0.3s; border: 2px solid rgba(255,255,255,0.1);
+            position: relative; overflow: hidden;
+        }
+        .ff-card:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(0,0,0,0.3); border-color: #f39c12; }
+        .ff-card .diamond-icon { font-size: 2.5rem; margin-bottom: 10px; }
+        .ff-card .package-name { font-size: 1.3rem; font-weight: 900; margin-bottom: 5px; }
+        .ff-card .package-price {
+            font-size: 1.6rem; font-weight: 900; color: #f39c12;
+            margin-bottom: 15px;
+        }
+        .ff-card .order-btn {
+            background: linear-gradient(135deg, #f39c12, #e74c3c);
+            color: white; border: none; padding: 12px 25px;
+            border-radius: 15px; font-weight: 900; font-size: 1rem;
+            cursor: pointer; transition: all 0.3s; width: 100%;
+        }
+        .ff-card .order-btn:hover { transform: scale(1.05); box-shadow: 0 5px 20px rgba(243,156,18,0.4); }
+        .ff-card::before {
+            content: ''; position: absolute; top: -50%; right: -50%;
+            width: 100%; height: 100%; background: radial-gradient(circle, rgba(243,156,18,0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        /* Modal */
+        .modal {
+            display: none; position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%; background: rgba(0,0,0,0.7);
+            z-index: 2000; justify-content: center; align-items: center;
+            backdrop-filter: blur(5px);
+        }
+        .modal.active { display: flex; }
+        .modal-content {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border-radius: 25px; padding: 30px; width: 90%; max-width: 500px;
+            color: white; position: relative; max-height: 90vh; overflow-y: auto;
+            animation: fadeIn 0.3s ease-out;
+        }
+        .close {
+            position: absolute; top: 15px; right: 20px;
+            font-size: 1.8rem; cursor: pointer; color: rgba(255,255,255,0.7);
+            transition: all 0.3s;
+        }
+        .close:hover { color: white; transform: scale(1.2); }
+
+        /* Order Form */
+        .order-form h2 { text-align: center; margin-bottom: 20px; font-size: 1.5rem; }
+        .order-form .order-summary {
+            background: rgba(255,255,255,0.1); border-radius: 15px;
+            padding: 15px; margin-bottom: 20px; text-align: center;
+        }
+        .order-form .order-summary .pkg-name { font-size: 1.2rem; font-weight: 900; }
+        .order-form .order-summary .pkg-price { font-size: 1.5rem; font-weight: 900; color: #f39c12; }
+        .input-group {
+            display: flex; align-items: center; gap: 10px;
+            background: rgba(255,255,255,0.1); border-radius: 12px;
+            padding: 12px 15px; margin-bottom: 15px;
+            border: 2px solid rgba(255,255,255,0.1);
+            transition: all 0.3s;
+        }
+        .input-group:focus-within { border-color: #f39c12; }
+        .input-group i { color: rgba(255,255,255,0.6); font-size: 1.1rem; }
+        .input-group input, .input-group select {
+            background: transparent; border: none; color: white;
+            font-size: 1rem; width: 100%; outline: none;
+        }
+        .input-group input::placeholder { color: rgba(255,255,255,0.5); }
+        .input-group select option { background: #1a1a2e; color: white; }
+        .submit-btn {
+            background: linear-gradient(135deg, #f39c12, #e74c3c);
+            color: white; border: none; padding: 15px 30px;
+            border-radius: 20px; font-size: 1.1rem; font-weight: 900;
+            cursor: pointer; transition: all 0.3s; width: 100%;
+        }
+        .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(243,156,18,0.4); }
+
+        /* Login Form */
+        .login-form h2 { text-align: center; margin-bottom: 25px; font-size: 1.5rem; }
+        .login-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white; border: none; padding: 15px 30px;
+            border-radius: 20px; font-size: 1.1rem; font-weight: 900;
+            cursor: pointer; transition: all 0.3s; width: 100%;
+        }
+        .login-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(102,126,234,0.4); }
+
+        /* Admin Panel Styles */
+        .admin-panel { display: none; background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 30px; border-radius: 25px; max-height: 80vh; overflow-y: auto; }
+        .admin-panel.active { display: block; }
+        .admin-nav { display: flex; gap: 15px; margin-bottom: 30px; flex-wrap: wrap; }
+        .admin-tab {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 12px 25px; background: rgba(255,255,255,0.1);
+            border-radius: 20px; cursor: pointer; transition: all 0.3s;
+            border: 2px solid transparent; font-weight: 600;
+        }
+        .admin-tab.active { background: white; color: #667eea; border-color: white; transform: translateY(-2px); }
+        .admin-tab:hover { background: rgba(255,255,255,0.2); transform: translateY(-2px); }
+
+        .admin-section { display: none; }
+        .admin-section.active { display: block; animation: fadeIn 0.3s ease-in; }
+
+        .price-editor { margin-bottom: 25px; }
+        .price-row {
+            display: flex; gap: 15px; align-items: center; margin-bottom: 20px;
+            padding: 20px; background: rgba(255,255,255,0.1);
+            border-radius: 15px; transition: all 0.3s;
+        }
+        .price-row:hover { background: rgba(255,255,255,0.2); }
+        .price-label { font-weight: 900; font-size: 1.1rem; min-width: 150px; }
+        .price-input {
+            width: 100px; padding: 10px; border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 10px; background: rgba(255,255,255,0.9);
+            color: #333; font-weight: 600;
+        }
+        .delete-btn {
+            background: #ff4757; color: white; border: none;
+            padding: 8px 15px; border-radius: 10px; cursor: pointer;
+            font-size: 0.9rem; transition: all 0.3s;
+        }
+        .delete-btn:hover { background: #ff3742; transform: scale(1.05); }
+        .save-btn {
+            background: linear-gradient(135deg, #00b894, #00a085);
+            color: white; border: none; padding: 15px 30px;
+            border-radius: 20px; font-size: 1.1rem; font-weight: 900;
+            cursor: pointer; transition: all 0.3s; width: 100%; margin-top: 20px;
+        }
+        .save-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0,184,148,0.4); }
+
+        .notification-editor textarea {
+            width: 100%; height: 120px; padding: 15px;
+            border: 2px solid rgba(255,255,255,0.3); border-radius: 15px;
+            background: rgba(255,255,255,0.9); color: #333;
+            font-family: inherit; resize: vertical;
+        }
+        .offer-list { margin-top: 20px; }
+        .offer-item {
+            background: rgba(255,255,255,0.1); padding: 15px;
+            border-radius: 12px; margin-bottom: 15px;
+            border-left: 4px solid #00b894;
+        }
+        .offer-item:hover { background: rgba(255,255,255,0.2); }
+
+        /* Floating WhatsApp */
+        .whatsapp-float {
+            position: fixed; bottom: 25px; right: 25px;
+            width: 60px; height: 60px; background: #25D366;
+            border-radius: 50%; display: flex; align-items: center;
+            justify-content: center; color: white; font-size: 2rem;
+            box-shadow: 0 5px 20px rgba(37,211,102,0.4);
+            z-index: 999; transition: all 0.3s; text-decoration: none;
+            animation: bounce 2s infinite;
+        }
+        .whatsapp-float:hover { transform: scale(1.1); box-shadow: 0 8px 30px rgba(37,211,102,0.6); }
+
+        /* Footer */
+        .footer {
+            background: linear-gradient(135deg, #240b36, #c31432);
+            color: white; text-align: center; padding: 30px 20px;
+            margin-top: 40px;
+        }
+        .footer p { opacity: 0.8; margin-bottom: 5px; }
+
+        /* Animations */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+        @keyframes slideDown { from { transform: translateY(-100%); } to { transform: translateY(0); } }
+        @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header { padding: 10px 15px; gap: 10px; justify-content: center; }
+            .logo { font-size: 1.2rem; }
+            .logo i { font-size: 1.6rem; }
+            .phone { font-size: 1rem; padding: 8px 15px; }
+            .admin-btn { padding: 8px 16px; font-size: 0.85rem; }
+            .hero { margin-top: 140px; padding: 25px 15px; }
+            .hero h1 { font-size: 1.8rem; }
+            .hero p { font-size: 1rem; }
+            .ff-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; }
+            .section-title { font-size: 1.4rem; }
+            .admin-nav { flex-direction: column; }
+            .price-row { flex-direction: column; gap: 10px; text-align: center; }
+            .price-input { width: 100%; }
+            .admin-panel { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="header">
+        <div class="logo">
+            <i class="fas fa-circle" style="color: #ff4757;"></i>
+            Red Dot Topup
+        </div>
+        <a href="tel:01912168328" class="phone">
+            <i class="fas fa-phone"></i> ০১৯১২১৬৮৩২৮
+        </a>
+        <button class="admin-btn" onclick="openAdminLogin()">
+            <i class="fas fa-user-shield"></i> Admin
+        </button>
+    </div>
+
+    <!-- Notification Bar -->
+    <div class="notification-bar" id="notificationBar">
+        <span class="marquee" id="notificationText"></span>
+    </div>
+
+    <!-- Hero Section -->
+    <div class="hero">
+        <h1>💎 Free Fire Diamond Shop</h1>
+        <p>সবচেয়ে কম দামে ডায়মন্ড কিনুন - ১০০% নিরাপদ ও বিশ্বস্ত</p>
+        <div class="hero-badge">
+            <i class="fas fa-shield-alt"></i> Trusted Seller | Fast Delivery
+        </div>
+    </div>
+
+    <!-- FF Diamond Section -->
+    <div class="ff-section">
+        <div class="section-title">🔥 Diamond Packages</div>
+        <div class="ff-grid" id="ffGrid">
+            <!-- Cards generated dynamically by JS -->
+        </div>
+    </div>
+
+    <!-- Offers Section -->
+    <div class="ff-section" id="offersSection" style="display:none;">
+        <div class="section-title">🏷️ Special Offers</div>
+        <div class="ff-grid" id="offersGrid"></div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p><strong>Red Dot Topup Shop</strong></p>
+        <p>যোগাযোগ: ০১৯১২১৬৮৩২৮</p>
+        <p>&copy; 2026 Red Dot Topup. All rights reserved.</p>
+    </div>
+
+    <!-- Floating WhatsApp Button -->
+    <a href="https://wa.me/8801912168328" target="_blank" class="whatsapp-float" title="WhatsApp এ মেসেজ করুন">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <!-- Order Modal -->
+    <div id="orderModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeOrderModal()">&times;</span>
+            <div class="order-form">
+                <h2>📦 অর্ডার করুন</h2>
+                <div class="order-summary">
+                    <div class="pkg-name" id="orderPkgName"></div>
+                    <div class="pkg-price" id="orderPkgPrice"></div>
+                </div>
+                <form id="orderForm">
+                    <div class="input-group">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="playerName" placeholder="আপনার নাম" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-gamepad"></i>
+                        <input type="text" id="playerId" placeholder="Player ID (Free Fire)" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-phone"></i>
+                        <input type="tel" id="playerPhone" placeholder="মোবাইল নম্বর" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-wallet"></i>
+                        <select id="paymentMethod" required>
+                            <option value="">পেমেন্ট মেথড বাছুন</option>
+                            <option value="bKash">bKash</option>
+                            <option value="Nagad">Nagad</option>
+                            <option value="Rocket">Rocket</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="submit-btn">
+                        <i class="fab fa-whatsapp"></i> WhatsApp এ অর্ডার পাঠান
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Login Modal -->
+    <div id="adminModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeAdminLogin()">&times;</span>
+            <div class="login-form" id="loginForm">
+                <h2>🔐 Admin Panel</h2>
+                <form id="adminForm">
+                    <div class="input-group">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="adminUser" placeholder="Username" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="adminPass" placeholder="Password" required>
+                    </div>
+                    <button type="submit" class="login-btn">
+                        <i class="fas fa-sign-in-alt"></i> Admin Login
+                    </button>
+                </form>
+            </div>
+            <div id="adminPanel" class="admin-panel">
+                <div class="admin-nav">
+                    <div class="admin-tab active" onclick="switchTab('prices', this)">
+                        <i class="fas fa-gem"></i> Prices
+                    </div>
+                    <div class="admin-tab" onclick="switchTab('notifications', this)">
+                        <i class="fas fa-bell"></i> Notifications
+                    </div>
+                    <div class="admin-tab" onclick="switchTab('offers', this)">
+                        <i class="fas fa-tag"></i> Offers
+                    </div>
+                </div>
+
+                <!-- Prices Tab -->
+                <div id="pricesTab" class="admin-section active">
+                    <h3>💎 Diamond Prices</h3>
+                    <div id="priceList"></div>
+                    <input type="text" id="newPackage" class="price-input" placeholder="New Package (ex: 500 Diamond)" style="width:100%;margin:20px 0;">
+                    <input type="number" id="newPrice" class="price-input" placeholder="Price (BDT)" style="width:150px;">
+                    <button class="save-btn" onclick="addNewPackage()">
+                        ➕ Add New Package
+                    </button>
+                </div>
+
+                <!-- Notifications Tab -->
+                <div id="notificationsTab" class="admin-section">
+                    <h3>🔔 Notifications</h3>
+                    <div class="notification-editor">
+                        <textarea id="notificationInput" placeholder="Enter notification text..."></textarea>
+                    </div>
+                    <button class="save-btn" onclick="updateNotification()">
+                        📤 Update Notification
+                    </button>
+                </div>
+
+                <!-- Offers Tab -->
+                <div id="offersTab" class="admin-section">
+                    <h3>🏷️ Special Offers</h3>
+                    <input type="text" id="offerTitle" class="price-input" placeholder="Offer Title" style="width:100%;margin-bottom:10px;">
+                    <input type="text" id="offerDesc" class="price-input" placeholder="Offer Description" style="width:100%;margin-bottom:10px;">
+                    <button class="save-btn" onclick="addOffer()">➕ Add Offer</button>
+                    <div id="offerList" class="offer-list"></div>
+                </div>
+
+                <button class="save-btn" onclick="logoutAdmin()" style="background:#ff4757;margin-top:30px;">🚪 Logout</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Admin Credentials
+        const ADMIN_CREDENTIALS = {
+            username: 'FAHIMNILOY1515',
+            password: '0147896325'
+        };
+
+        // Packages data (stored in localStorage)
+        let packages = JSON.parse(localStorage.getItem('packages')) || [
+            { name: '25 Diamond', price: '25' },
+            { name: '50 Diamond', price: '50' },
+            { name: 'Weekly Lite', price: '50' },
+            { name: '115 Diamond', price: '80' },
+            { name: '240 Diamond', price: '160' },
+            { name: '610 Diamond', price: '390' },
+            { name: '1240 Diamond', price: '790' },
+            { name: '2530 Diamond', price: '1560' },
+            { name: 'Weekly Pack', price: '165' },
+            { name: 'Monthly Pack', price: '790' }
+        ];
+
+        let notifications = JSON.parse(localStorage.getItem('notifications')) || [
+            'Weekly Lite শুধু ৫০ টাকা! এখনই অর্ডার করুন 💎'
+        ];
+
+        let offers = JSON.parse(localStorage.getItem('offers')) || [];
+
+        // Current order details
+        let currentOrder = {};
+
+        // ===== Notification =====
+        function showNotification() {
+            var text = notifications[0] || '';
+            document.getElementById('notificationText').textContent = text;
+        }
+
+        // ===== Render FF Cards =====
+        function updateFFCards() {
+            var grid = document.getElementById('ffGrid');
+            grid.innerHTML = '';
+            packages.forEach(function(pkg, index) {
+                var card = document.createElement('div');
+                card.className = 'ff-card';
+                card.innerHTML =
+                    '<div class="diamond-icon">💎</div>' +
+                    '<div class="package-name">' + pkg.name + '</div>' +
+                    '<div class="package-price">৳ ' + pkg.price + ' BDT</div>' +
+                    '<button class="order-btn" onclick="orderFF(' + index + ')">' +
+                    '<i class="fas fa-shopping-cart"></i> অর্ডার করুন</button>';
+                grid.appendChild(card);
+            });
+        }
+
+        // ===== Render Offers =====
+        function renderOffers() {
+            var section = document.getElementById('offersSection');
+            var grid = document.getElementById('offersGrid');
+            grid.innerHTML = '';
+            if (offers.length === 0) {
+                section.style.display = 'none';
+                return;
+            }
+            section.style.display = 'block';
+            offers.forEach(function(offer) {
+                var card = document.createElement('div');
+                card.className = 'ff-card';
+                card.innerHTML =
+                    '<div class="diamond-icon">🏷️</div>' +
+                    '<div class="package-name">' + offer.title + '</div>' +
+                    '<div style="opacity:0.8;">' + offer.desc + '</div>';
+                grid.appendChild(card);
+            });
+        }
+
+        // ===== Order Functions =====
+        function orderFF(index) {
+            currentOrder = packages[index];
+            document.getElementById('orderPkgName').textContent = currentOrder.name;
+            document.getElementById('orderPkgPrice').textContent = '৳ ' + currentOrder.price + ' BDT';
+            document.getElementById('orderModal').classList.add('active');
+        }
+
+        function closeOrderModal() {
+            document.getElementById('orderModal').classList.remove('active');
+            document.getElementById('orderForm').reset();
+        }
+
+        document.getElementById('orderForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            var name = document.getElementById('playerName').value;
+            var pid = document.getElementById('playerId').value;
+            var phone = document.getElementById('playerPhone').value;
+            var payment = document.getElementById('paymentMethod').value;
+
+            var msg = '🔴 *Red Dot Topup - New Order*\n\n' +
+                '📦 Package: ' + currentOrder.name + '\n' +
+                '💰 Price: ৳' + currentOrder.price + ' BDT\n' +
+                '👤 Name: ' + name + '\n' +
+                '🎮 Player ID: ' + pid + '\n' +
+                '📱 Phone: ' + phone + '\n' +
+                '💳 Payment: ' + payment;
+
+            var url = 'https://wa.me/8801912168328?text=' + encodeURIComponent(msg);
+            window.open(url, '_blank');
+            closeOrderModal();
+        });
+
+        // ===== Admin Functions =====
+        function openAdminLogin() {
+            document.getElementById('adminModal').classList.add('active');
+        }
+
+        function closeAdminLogin() {
+            document.getElementById('adminModal').classList.remove('active');
+            document.getElementById('adminPanel').classList.remove('active');
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('adminPass').value = '';
+        }
+
+        document.getElementById('adminForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            var username = document.getElementById('adminUser').value;
+            var password = document.getElementById('adminPass').value;
+
+            if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
+                document.getElementById('loginForm').style.display = 'none';
+                document.getElementById('adminPanel').classList.add('active');
+                loadAdminData();
+            } else {
+                alert('❌ Wrong credentials!');
+            }
+        });
+
+        function loadAdminData() {
+            loadPrices();
+            loadNotifications();
+            loadOffers();
+        }
+
+        function loadPrices() {
+            var priceList = document.getElementById('priceList');
+            priceList.innerHTML = '';
+            packages.forEach(function(pkg, index) {
+                var row = document.createElement('div');
+                row.className = 'price-row';
+                row.innerHTML =
+                    '<span class="price-label">' + pkg.name + '</span>' +
+                    '<input type="number" class="price-input" value="' + pkg.price + '" onchange="updatePrice(' + index + ', this.value)">' +
+                    '<button class="delete-btn" onclick="deletePackage(' + index + ')">🗑️ Delete</button>';
+                priceList.appendChild(row);
+            });
+        }
+
+        function updatePrice(index, newPrice) {
+            packages[index].price = newPrice;
+            saveData();
+            updateFFCards();
+        }
+
+        function deletePackage(index) {
+            if (confirm('Delete this package?')) {
+                packages.splice(index, 1);
+                saveData();
+                loadPrices();
+                updateFFCards();
+            }
+        }
+
+        function addNewPackage() {
+            var name = document.getElementById('newPackage').value;
+            var price = document.getElementById('newPrice').value;
+            if (name && price) {
+                packages.push({ name: name, price: price });
+                saveData();
+                loadPrices();
+                updateFFCards();
+                document.getElementById('newPackage').value = '';
+                document.getElementById('newPrice').value = '';
+            }
+        }
+
+        function loadNotifications() {
+            document.getElementById('notificationInput').value = notifications[0] || '';
+        }
+
+        function updateNotification() {
+            var text = document.getElementById('notificationInput').value;
+            notifications[0] = text;
+            saveData();
+            showNotification();
+            alert('✅ Notification updated!');
+        }
+
+        function loadOffers() {
+            var offerList = document.getElementById('offerList');
+            offerList.innerHTML = '';
+            offers.forEach(function(offer, index) {
+                var item = document.createElement('div');
+                item.className = 'offer-item';
+                item.innerHTML =
+                    '<strong>' + offer.title + '</strong><br>' + offer.desc +
+                    '<button class="delete-btn" onclick="deleteOffer(' + index + ')" style="float:right;font-size:0.8rem;">🗑️</button>';
+                offerList.appendChild(item);
+            });
+        }
+
+        function addOffer() {
+            var title = document.getElementById('offerTitle').value;
+            var desc = document.getElementById('offerDesc').value;
+            if (title && desc) {
+                offers.push({ title: title, desc: desc });
+                saveData();
+                loadOffers();
+                renderOffers();
+                document.getElementById('offerTitle').value = '';
+                document.getElementById('offerDesc').value = '';
+                alert('✅ Offer added!');
+            }
+        }
+
+        function deleteOffer(index) {
+            if (confirm('Delete this offer?')) {
+                offers.splice(index, 1);
+                saveData();
+                loadOffers();
+                renderOffers();
+            }
+        }
+
+        function switchTab(tab, el) {
+            document.querySelectorAll('.admin-tab').forEach(function(t) { t.classList.remove('active'); });
+            document.querySelectorAll('.admin-section').forEach(function(s) { s.classList.remove('active'); });
+            el.classList.add('active');
+            document.getElementById(tab + 'Tab').classList.add('active');
+        }
+
+        function logoutAdmin() {
+            document.getElementById('adminPanel').classList.remove('active');
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('adminPass').value = '';
+        }
+
+        function saveData() {
+            localStorage.setItem('packages', JSON.stringify(packages));
+            localStorage.setItem('notifications', JSON.stringify(notifications));
+            localStorage.setItem('offers', JSON.stringify(offers));
+        }
+
+        // ===== Initialize =====
+        window.addEventListener('load', function() {
+            saveData();
+            showNotification();
+            updateFFCards();
+            renderOffers();
+        });
+    </script>
+</body>
+</html>
